@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Superclawman — Proposta para Renato Santos</title>
+<style>
+  :root {
+    --bg:     #0f1410;
+    --bg2:    #141a14;
+    --bg3:    #181f18;
+    --ivory:  #F5F3ED;
+    --slate:  #141413;
+    --amber:  #D98C2A;
+    --amber-d:#B5711A;
+    --green:  #4A7C59;
+    --red:    #C0392B;
+    --g500:   #7A796F;
+    --g300:   #C8C5B8;
+    --serif:  ui-serif, Georgia, "Times New Roman", serif;
+    --sans:   system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono:   ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-snap-type: y mandatory; overflow-y: scroll; height: 100%; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ivory); height: 100%; }
+
+  .slide {
+    scroll-snap-align: start;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .slide-inner.visible { opacity: 1; transform: translateY(0); }
+
+  .s1 { background: var(--bg); }
+  .s2 { background: var(--bg2); }
+  .s3 { background: var(--bg3); }
+  .s4 { background: var(--bg); }
+  .s5 { background: var(--bg2); }
+  .s6 { background: var(--bg3); }
+  .s7 { background: var(--amber-d); }
+
+  /* Eyebrow */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 24px; height: 2px;
+    background: var(--amber);
+    flex-shrink: 0;
+  }
+
+  /* Cover */
+  .cover-title {
+    font-family: var(--serif);
+    font-size: clamp(40px, 6.5vw, 76px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .cover-title em { color: var(--amber); font-style: italic; }
+  .cover-sub { font-size: 18px; color: var(--g500); line-height: 1.6; max-width: 560px; margin-bottom: 40px; }
+  .cover-sub strong { color: var(--ivory); }
+
+  .stat-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
+  .stat-pill {
+    background: rgba(217,140,42,0.1);
+    border: 1px solid rgba(217,140,42,0.3);
+    border-radius: 100px;
+    padding: 10px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .stat-num { font-family: var(--serif); font-size: 28px; color: var(--amber); line-height: 1; }
+  .stat-label { font-size: 13px; color: var(--g500); line-height: 1.3; }
+
+  /* Section titles */
+  .sec-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.1;
+    margin-bottom: 32px;
+    letter-spacing: -0.018em;
+  }
+  .sec-title em { color: var(--amber); font-style: italic; }
+
+  /* Pain slide */
+  .pain-body { font-size: 17px; line-height: 1.7; color: #c0bdb4; max-width: 720px; }
+  .pain-body p { margin-bottom: 18px; }
+  .pain-body strong { color: var(--ivory); }
+  .pain-quote {
+    border-left: 3px solid var(--amber);
+    padding: 16px 24px;
+    margin: 28px 0;
+    background: rgba(217,140,42,0.07);
+    border-radius: 0 6px 6px 0;
+    font-size: 18px;
+    color: var(--ivory);
+    line-height: 1.55;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+
+  /* Flow steps */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .flow-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 22px 20px;
+    transition: border-color 0.2s;
+  }
+  .flow-card:hover { border-color: var(--amber); }
+  .flow-step {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+  .flow-heading {
+    font-family: var(--serif);
+    font-size: 18px;
+    color: var(--ivory);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .flow-body { font-size: 13px; color: var(--g500); line-height: 1.6; }
+
+  /* WhatsApp mockup */
+  .mock-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: start; }
+  .mock-label { font-family: var(--serif); font-size: clamp(22px, 3vw, 36px); line-height: 1.15; margin-bottom: 16px; letter-spacing: -0.015em; }
+  .mock-label em { color: var(--amber); font-style: italic; }
+  .mock-desc { font-size: 15px; color: var(--g500); line-height: 1.6; }
+  .mock-desc strong { color: var(--ivory); }
+
+  .phone-frame { background: #111b21; border-radius: 20px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.5); max-width: 320px; margin: 0 auto; }
+  .phone-header { background: #202c33; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  .phone-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--amber); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .phone-name { font-size: 15px; color: #e9edef; font-weight: 500; }
+  .phone-status { font-size: 12px; color: #8696a0; }
+  .phone-body { padding: 10px; background: #0b141a; display: flex; flex-direction: column; gap: 5px; }
+  .msg { max-width: 90%; padding: 8px 10px 4px; border-radius: 8px; font-size: 13px; line-height: 1.5; }
+  .msg-in { background: #202c33; color: #e9edef; border-top-left-radius: 2px; align-self: flex-start; }
+  .msg-out { background: #005c4b; color: #e9edef; border-top-right-radius: 2px; align-self: flex-end; }
+  .msg-time { font-size: 10px; color: #8696a0; text-align: right; margin-top: 2px; display: block; }
+  .msg-out .msg-time { color: #8ebcb0; }
+  .msg strong { color: #fff; font-weight: 600; }
+  .msg .val { color: #25d366; font-weight: 600; font-family: var(--mono); font-size: 12px; }
+  .msg .warn { color: #f0c040; font-weight: 600; }
+  .date-div { text-align: center; font-size: 11px; color: #8696a0; background: rgba(11,20,26,0.8); padding: 3px 10px; border-radius: 8px; align-self: center; margin: 4px 0; }
+
+  /* Before/After */
+  .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
+  .ba-col { border-radius: 10px; padding: 24px; }
+  .ba-before { background: rgba(192,57,43,0.1); border: 1px solid rgba(192,57,43,0.25); }
+  .ba-after  { background: rgba(74,124,89,0.1); border: 1px solid rgba(74,124,89,0.25); }
+  .ba-header { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+  .ba-before .ba-header { color: #e05a5a; }
+  .ba-after  .ba-header { color: #6abf7e; }
+  .ba-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 14px; line-height: 1.5; color: #c0bdb4; }
+  .ba-item::before { flex-shrink: 0; margin-top: 2px; }
+  .ba-before .ba-item::before { content: '✗'; color: #e05a5a; font-weight: 700; }
+  .ba-after  .ba-item::before { content: '✓'; color: #6abf7e; font-weight: 700; }
+
+  /* CTA */
+  .cta-title { font-family: var(--serif); font-size: clamp(34px, 5.5vw, 64px); line-height: 1.06; letter-spacing: -0.02em; margin-bottom: 28px; color: #fff; }
+  .cta-title em { font-style: italic; opacity: 0.85; }
+  .cta-body { font-size: 18px; color: rgba(255,255,255,0.8); line-height: 1.6; max-width: 560px; margin-bottom: 40px; }
+  .cta-cards { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 36px; }
+  .cta-card { background: rgba(0,0,0,0.15); border-radius: 8px; padding: 14px 22px; color: #fff; }
+  .cta-card-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.6; margin-bottom: 6px; }
+  .cta-card-val { font-size: 16px; font-weight: 500; }
+
+  /* Nav */
+  .nav-dots { position: fixed; right: 20px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: background 0.2s, transform 0.2s; }
+  .dot.active { background: var(--amber); transform: scale(1.4); }
+  .slide-counter { position: fixed; bottom: 20px; right: 28px; font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; z-index: 100; }
+
+  .scroll-hint { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: 0.35; animation: bounce 2s ease-in-out infinite; }
+  .scroll-hint span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+  @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+
+  @media(max-width:700px) {
+    .slide { padding: 36px 20px; }
+    .mock-layout, .ba-grid { grid-template-columns: 1fr; }
+    .nav-dots { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav-dots" id="navDots"></nav>
+<div class="slide-counter" id="slideCounter">1 / 7</div>
+
+<!-- SLIDE 1: Cover -->
+<section class="slide s1" data-slide="0">
+  <div class="slide-inner">
+    <div class="eyebrow">Proposta Personalizada · Maio 2026</div>
+    <h1 class="cover-title">Chega de<br>recibo <em>perdido</em><br>no WhatsApp.</h1>
+    <p class="cover-sub">
+      <strong>Superclawman para Renato Santos</strong> — um agente de IA que entra no grupo da sua obra, lê cada recibo que chega, organiza tudo automaticamente e <strong>te avisa quando algo está errado</strong>.<br>Sem planilha manual. Sem surpresa no fechamento.
+    </p>
+    <div class="stat-row">
+      <div class="stat-pill"><span class="stat-num">24/7</span><span class="stat-label">monitorando<br>o grupo da obra</span></div>
+      <div class="stat-pill"><span class="stat-num">0s</span><span class="stat-label">para registrar<br>um recibo</span></div>
+      <div class="stat-pill"><span class="stat-num">38%</span><span class="stat-label">de sobrepreço<br>detectado na hora</span></div>
+    </div>
+    <div style="font-family:var(--mono);font-size:12px;color:var(--g500);letter-spacing:0.06em;margin-top:40px;">Preparado por Superclawman · Maio de 2026 · Confidencial</div>
+  </div>
+  <div class="scroll-hint">
+    <span>deslize</span>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 3v10M4 9l4 4 4-4"/></svg>
+  </div>
+</section>
+
+<!-- SLIDE 2: O problema -->
+<section class="slide s2" data-slide="1">
+  <div class="slide-inner">
+    <div class="eyebrow">O problema hoje</div>
+    <h2 class="sec-title">Cada obra é uma<br><em>pilha de recibos</em><br>no WhatsApp.</h2>
+    <div class="pain-body">
+      <p>Pedreiros, mestre de obras, fornecedores — todo mundo manda foto de recibo, nota fiscal e comprovante no grupo. <strong>Misturado com conversa operacional, áudio e meme.</strong></p>
+      <div class="pain-quote">"Para fechar o custo da obra, alguém precisa rolar o histórico, baixar imagem por imagem, digitar na planilha e arquivar. Isso toma horas — e ainda assim erra."</div>
+      <p>E o pior: se um fornecedor cobrar 30% acima do combinado, ou um recibo for duplicado, isso só aparece <strong>semanas depois</strong> — quando o prejuízo já aconteceu.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 3: A solução -->
+<section class="slide s3" data-slide="2">
+  <div class="slide-inner">
+    <div class="eyebrow">A solução Superclawman</div>
+    <h2 class="sec-title">Um agente de IA<br><em>dentro do seu grupo</em><br>de obra.</h2>
+    <div class="flow-grid">
+      <div class="flow-card">
+        <div class="flow-step">01 — Captura</div>
+        <div class="flow-heading">Lê tudo em silêncio</div>
+        <div class="flow-body">Entra no grupo como um número do Superclawman. Monitora 24/7. Só age quando identifica um recibo, NF ou comprovante.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step">02 — OCR via IA</div>
+        <div class="flow-heading">Extrai os dados automaticamente</div>
+        <div class="flow-body">Fornecedor, CNPJ, data, número da NF, itens, valores, forma de pagamento e qual obra. Tudo sem você digitar nada.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step">03 — Google Sheets</div>
+        <div class="flow-heading">Planilha viva atualizada na hora</div>
+        <div class="flow-body">Cada recibo vira uma linha estruturada. Filtros por obra, categoria e mês. Totais automáticos. Link direto para o arquivo original.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step">04 — Nuvem</div>
+        <div class="flow-heading">Recibos arquivados com padrão</div>
+        <div class="flow-body">Google Drive ou S3. Nomeados assim: 2026-05-11_CasaDoCimento_NF1234_R$2.350.pdf. Pronto para contabilidade ou fiscal.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step">05 — Confirmação</div>
+        <div class="flow-heading">Responde no próprio grupo</div>
+        <div class="flow-body">"Recebido: NF de R$ 2.350 da Casa do Cimento, registrada na Obra Jardim das Acácias. ✓" — Se tiver dúvida sobre qual obra, ele pergunta.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-step">06 — Anomalia</div>
+        <div class="flow-heading">Alerta de sobrepreço e fraude</div>
+        <div class="flow-body">Aprende o preço médio de cada material por fornecedor. Se desviar, avisa: "Este recibo está 38% acima do preço médio dos últimos 60 dias. Confirma?"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 4: Mockup — alerta de anomalia -->
+<section class="slide s4" data-slide="3">
+  <div class="slide-inner">
+    <div class="eyebrow">Na prática — caso 1</div>
+    <div class="mock-layout">
+      <div>
+        <h2 class="mock-label">Alerta de<br><em>sobrepreço</em><br>na hora.</h2>
+        <p class="mock-desc" style="margin-bottom:20px;">Fornecedor manda a nota. O agente processa, confere com o histórico de preços daquele material e <strong>avisa antes de você aprovar o pagamento</strong>.</p>
+        <p class="mock-desc">Não é semanas depois no fechamento. É <strong>na hora que o recibo chega</strong>.</p>
+      </div>
+      <div class="phone-frame">
+        <div class="phone-header">
+          <div class="phone-avatar">SC</div>
+          <div>
+            <div class="phone-name">Obra Jardim das Acácias</div>
+            <div class="phone-status">grupo · 8 participantes</div>
+          </div>
+        </div>
+        <div class="phone-body">
+          <div class="date-div">Hoje, 14:32</div>
+          <div class="msg msg-out">
+            [foto recibo - Casa do Cimento]<br>
+            NF 1234 - R$ 3.200,00
+            <span class="msg-time">14:32 ✓✓</span>
+          </div>
+          <div class="msg msg-in">
+            ✅ <strong>Recibo processado</strong><br><br>
+            Fornecedor: Casa do Cimento<br>
+            NF: 1234 | Data: 12/05/2026<br>
+            Valor: <span class="val">R$ 3.200,00</span><br>
+            Categoria: Cimento / Material<br>
+            Obra: Jardim das Acácias<br><br>
+            ⚠️ <span class="warn">ATENÇÃO: sobrepreço detectado</span><br>
+            Este valor está <strong>38% acima</strong> do preço médio que vocês pagaram em cimento nos últimos 60 dias (média: R$ 2.319,00).<br><br>
+            Confirma o pagamento assim mesmo?
+            <span class="msg-time">14:32 ✓✓</span>
+          </div>
+          <div class="msg msg-out">
+            Não, vou ligar pro fornecedor
+            <span class="msg-time">14:33 ✓✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 5: Mockup — consulta natural -->
+<section class="slide s5" data-slide="4">
+  <div class="slide-inner">
+    <div class="eyebrow">Na prática — caso 2</div>
+    <div class="mock-layout">
+      <div>
+        <h2 class="mock-label">Custo da obra<br><em>na hora</em>,<br>sem planilha.</h2>
+        <p class="mock-desc" style="margin-bottom:20px;">Quer saber quanto gastou em elétrica na Obra Centro? Pergunta no WhatsApp. A resposta vem <strong>em segundos</strong>, cruzada com tudo que já foi registrado.</p>
+        <p class="mock-desc">Sem ligar pro administrativo. Sem abrir planilha. <strong>De qualquer lugar, pelo celular.</strong></p>
+      </div>
+      <div class="phone-frame">
+        <div class="phone-header">
+          <div class="phone-avatar">SC</div>
+          <div>
+            <div class="phone-name">Superclawman</div>
+            <div class="phone-status">online</div>
+          </div>
+        </div>
+        <div class="phone-body">
+          <div class="date-div">Hoje, 17:15</div>
+          <div class="msg msg-out">
+            Quanto gastei em elétrica na Obra Centro até agora?
+            <span class="msg-time">17:15 ✓✓</span>
+          </div>
+          <div class="msg msg-in">
+            <strong>Obra Centro — Elétrica</strong><br>
+            Período: jan–mai 2026<br><br>
+            <span class="val">Total: R$ 47.830,00</span><br><br>
+            📋 Detalhamento:<br>
+            • Material elétrico: R$ 31.200<br>
+            • Mão de obra: R$ 12.400<br>
+            • Equipamentos: R$ 4.230<br><br>
+            📌 Orçado: R$ 52.000<br>
+            ✅ Dentro do orçamento (92% consumido)
+            <span class="msg-time">17:15 ✓✓</span>
+          </div>
+          <div class="msg msg-out">
+            E os 5 fornecedores que mais receberam?
+            <span class="msg-time">17:16 ✓✓</span>
+          </div>
+          <div class="msg msg-in">
+            Top 5 fornecedores — todas as obras:<br><br>
+            1. Casa do Cimento — <span class="val">R$ 89.400</span><br>
+            2. Elétrica São Paulo — <span class="val">R$ 54.200</span><br>
+            3. Hidro Materiais — <span class="val">R$ 38.900</span><br>
+            4. MO Pedreiro Zé — <span class="val">R$ 29.100</span><br>
+            5. Ferro e Aço LTDA — <span class="val">R$ 22.300</span>
+            <span class="msg-time">17:16 ✓✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 6: Antes x Depois -->
+<section class="slide s6" data-slide="5">
+  <div class="slide-inner">
+    <div class="eyebrow">Antes × Depois</div>
+    <h2 class="sec-title">O que <em>muda</em> na<br>operação.</h2>
+    <div class="ba-grid">
+      <div class="ba-col ba-before">
+        <div class="ba-header">⏱ Hoje — sem Superclawman</div>
+        <div class="ba-item">Rolar histórico do grupo para achar recibos</div>
+        <div class="ba-item">Digitar manualmente em planilha</div>
+        <div class="ba-item">Fechar o mês leva horas (ou dias)</div>
+        <div class="ba-item">Sobrepreço descoberto semanas depois</div>
+        <div class="ba-item">Recibo duplicado só aparece na auditoria</div>
+        <div class="ba-item">Fornecedor desconhecido passa despercebido</div>
+        <div class="ba-item">Custo por obra: sempre desatualizado</div>
+        <div class="ba-item">Comprovantes perdidos ou bagunçados</div>
+      </div>
+      <div class="ba-col ba-after">
+        <div class="ba-header">⚡ Com Superclawman</div>
+        <div class="ba-item">Recibo chega no grupo → registrado automaticamente</div>
+        <div class="ba-item">Planilha atualizada em segundos, sem ninguém digitar</div>
+        <div class="ba-item">Fechamento do mês: abrir a planilha e decidir</div>
+        <div class="ba-item">Alerta de sobrepreço na hora que o recibo chega</div>
+        <div class="ba-item">Duplicidade detectada antes do pagamento</div>
+        <div class="ba-item">Fornecedor fora do padrão sinalizado imediatamente</div>
+        <div class="ba-item">Custo por obra em tempo real, pelo celular</div>
+        <div class="ba-item">Arquivados na nuvem, nomeados e prontos para fiscal</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLIDE 7: CTA -->
+<section class="slide s7" data-slide="6">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:rgba(255,255,255,0.6)">Próximo passo</div>
+    <h2 class="cta-title">De "preciso parar<br>tudo pra fechar<br>o mês" para<br><em>"abrir e decidir".</em></h2>
+    <p class="cta-body">
+      Começamos com um grupo de obra. Em dias o agente está rodando, processando recibos e te avisando quando algo foge do padrão. Sem treinamento da equipe — eles continuam mandando foto no WhatsApp do jeito que já fazem.
+    </p>
+    <div class="cta-cards">
+      <div class="cta-card"><div class="cta-card-label">Implementação</div><div class="cta-card-val">Uma semana</div></div>
+      <div class="cta-card"><div class="cta-card-label">Canal</div><div class="cta-card-val">WhatsApp — zero mudança</div></div>
+      <div class="cta-card"><div class="cta-card-label">Equipe</div><div class="cta-card-val">Continua igual</div></div>
+    </div>
+    <div style="font-family:var(--mono);font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:0.06em">Superclawman · Proposta para Renato Santos · Maio 2026</div>
+  </div>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('navDots');
+  const counter = document.getElementById('slideCounter');
+  const total = slides.length;
+
+  slides.forEach((slide, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => slide.scrollIntoView({ behavior: 'smooth' }));
+    dotsEl.appendChild(dot);
+  });
+
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const inner = entry.target.querySelector('.slide-inner');
+      const idx = parseInt(entry.target.dataset.slide);
+      setTimeout(() => { if (inner) inner.classList.add('visible'); }, 80);
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+      counter.textContent = `${idx + 1} / ${total}`;
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
