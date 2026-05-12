@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Superclawman — Proposta para Thessyano Afonso</title>
+<style>
+  :root {
+    --ivory:  #FAF9F5;
+    --paper:  #FFFFFF;
+    --slate:  #141413;
+    --clay:   #D97757;
+    --clay-d: #B85C3E;
+    --oat:    #E3DACC;
+    --olive:  #788C5D;
+    --g100:   #F0EEE6;
+    --g200:   #E6E3DA;
+    --g300:   #D1CFC5;
+    --g500:   #87867F;
+    --g700:   #3D3D3A;
+    --serif:  ui-serif, Georgia, "Times New Roman", serif;
+    --sans:   system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono:   ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    height: 100%;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--slate);
+    color: var(--ivory);
+    height: 100%;
+  }
+
+  /* ── Slides ─────────────────────────────────────────────────────────── */
+  .slide {
+    scroll-snap-align: start;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .slide-inner.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Slide themes ───────────────────────────────────────────────────── */
+  .slide-cover   { background: var(--slate); }
+  .slide-letter  { background: #1a1a17; }
+  .slide-what    { background: #1e1c18; }
+  .slide-blocks  { background: var(--slate); }
+  .slide-table   { background: #181815; }
+  .slide-cta     { background: var(--clay-d); }
+
+  /* ── Eyebrow ────────────────────────────────────────────────────────── */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 2px;
+    background: var(--clay);
+    flex-shrink: 0;
+  }
+
+  /* ── Cover slide ────────────────────────────────────────────────────── */
+  .cover-title {
+    font-family: var(--serif);
+    font-size: clamp(42px, 7vw, 80px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+
+  .cover-title em {
+    color: var(--clay);
+    font-style: italic;
+  }
+
+  .cover-sub {
+    font-size: 18px;
+    color: var(--g500);
+    line-height: 1.55;
+    max-width: 520px;
+    margin-bottom: 40px;
+  }
+
+  .cover-sub strong { color: var(--ivory); }
+
+  .cover-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--g500);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Letter slide ───────────────────────────────────────────────────── */
+  .letter-name {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.1;
+    margin-bottom: 32px;
+    letter-spacing: -0.015em;
+  }
+
+  .letter-name em { color: var(--clay); font-style: italic; }
+
+  .letter-body {
+    font-size: 17px;
+    line-height: 1.65;
+    color: #c8c6be;
+    max-width: 680px;
+  }
+
+  .letter-body p { margin-bottom: 20px; }
+
+  .letter-body strong { color: var(--ivory); }
+
+  .letter-highlight {
+    border-left: 3px solid var(--clay);
+    padding: 16px 24px;
+    margin: 28px 0;
+    background: rgba(217,119,87,0.08);
+    border-radius: 0 6px 6px 0;
+    font-size: 18px;
+    color: var(--ivory);
+    line-height: 1.55;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+
+  /* ── What is slide ──────────────────────────────────────────────────── */
+  .what-title {
+    font-family: var(--serif);
+    font-size: clamp(30px, 4.5vw, 52px);
+    line-height: 1.08;
+    margin-bottom: 36px;
+    letter-spacing: -0.018em;
+  }
+
+  .what-title em { color: var(--clay); font-style: italic; }
+
+  .what-def {
+    font-size: 20px;
+    color: var(--ivory);
+    line-height: 1.55;
+    max-width: 680px;
+    margin-bottom: 40px;
+    padding: 24px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  /* ── Three blocks ───────────────────────────────────────────────────── */
+  .blocks-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 46px);
+    line-height: 1.1;
+    margin-bottom: 40px;
+    letter-spacing: -0.018em;
+  }
+
+  .blocks-title em { color: var(--clay); font-style: italic; }
+
+  .blocks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .block-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 28px 24px;
+    transition: border-color 0.2s;
+  }
+
+  .block-card:hover { border-color: var(--clay); }
+
+  .block-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 14px;
+  }
+
+  .block-heading {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ivory);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .block-body {
+    font-size: 14px;
+    color: var(--g500);
+    line-height: 1.6;
+  }
+
+  /* ── Table slide ────────────────────────────────────────────────────── */
+  .table-title {
+    font-family: var(--serif);
+    font-size: clamp(26px, 3.5vw, 42px);
+    line-height: 1.1;
+    margin-bottom: 36px;
+    letter-spacing: -0.018em;
+  }
+
+  .table-title em { color: var(--clay); font-style: italic; }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .comparison-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .comparison-table th:first-child { color: var(--g500); }
+  .comparison-table th:nth-child(2) { color: #e05a5a; }
+  .comparison-table th:nth-child(3) { color: var(--olive); }
+
+  .comparison-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .comparison-table td:first-child {
+    color: var(--ivory);
+    font-weight: 500;
+    width: 22%;
+  }
+
+  .comparison-table td:nth-child(2) {
+    color: var(--g500);
+    width: 39%;
+  }
+
+  .comparison-table td:nth-child(3) {
+    color: #a8c48a;
+    width: 39%;
+  }
+
+  .comparison-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* ── CTA slide ──────────────────────────────────────────────────────── */
+  .cta-title {
+    font-family: var(--serif);
+    font-size: clamp(36px, 6vw, 68px);
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    color: #fff;
+  }
+
+  .cta-title em { font-style: italic; opacity: 0.85; }
+
+  .cta-body {
+    font-size: 18px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    max-width: 560px;
+    margin-bottom: 40px;
+  }
+
+  .cta-sig {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Nav dots ───────────────────────────────────────────────────────── */
+  .nav-dots {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .dot.active {
+    background: var(--clay);
+    transform: scale(1.4);
+  }
+
+  /* ── Slide counter ──────────────────────────────────────────────────── */
+  .slide-counter {
+    position: fixed;
+    bottom: 20px;
+    right: 28px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.08em;
+    z-index: 100;
+  }
+
+  /* ── Scroll hint ────────────────────────────────────────────────────── */
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.35;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .scroll-hint span {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .scroll-hint svg { width: 16px; height: 16px; }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── Stat pills ─────────────────────────────────────────────────────── */
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+
+  .stat-pill {
+    background: rgba(217,119,87,0.12);
+    border: 1px solid rgba(217,119,87,0.25);
+    border-radius: 100px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 28px;
+    color: var(--clay);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--g500);
+    line-height: 1.3;
+  }
+
+  /* ── Mobile ─────────────────────────────────────────────────────────── */
+  @media (max-width: 600px) {
+    .slide { padding: 40px 24px; }
+    .comparison-table { font-size: 12px; }
+    .comparison-table td, .comparison-table th { padding: 10px 10px; }
+    .blocks-grid { grid-template-columns: 1fr; }
+    .nav-dots { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav dots -->
+<nav class="nav-dots" id="navDots"></nav>
+<div class="slide-counter" id="slideCounter">1 / 6</div>
+
+<!-- ── SLIDE 1: Cover ──────────────────────────────────────────────── -->
+<section class="slide slide-cover" data-slide="0">
+  <div class="slide-inner">
+    <div class="eyebrow">Proposta Personalizada · Maio 2026</div>
+    <h1 class="cover-title">
+      Super<em>clawman</em><br>para Thessyano
+    </h1>
+    <p class="cover-sub">
+      Seu <strong>segundo cérebro</strong> para gestão de fundos,<br>
+      análise de companhias e cobertura de mercado —<br>
+      tudo no <strong>WhatsApp</strong>.
+    </p>
+    <div class="stat-row">
+      <div class="stat-pill">
+        <span class="stat-num">3h</span>
+        <span class="stat-label">economizadas<br>por dia</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-num">24/7</span>
+        <span class="stat-label">monitorando<br>suas posições</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-num">20s</span>
+        <span class="stat-label">para qualquer<br>resposta ad-hoc</span>
+      </div>
+    </div>
+    <div class="cover-meta" style="margin-top:40px;">Enviado por Paulo Ovidio · Sandmanpo NUC</div>
+  </div>
+  <div class="scroll-hint">
+    <span>deslize</span>
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M8 3v10M4 9l4 4 4-4"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── SLIDE 2: Letter ─────────────────────────────────────────────── -->
+<section class="slide slide-letter" data-slide="1">
+  <div class="slide-inner">
+    <div class="eyebrow">Uma palavra antes</div>
+    <h2 class="letter-name">Thessyano,<br><em>vou direto ao ponto.</em></h2>
+    <div class="letter-body">
+      <p>Você é, de longe, o gestor mais disciplinado que eu conheço. Lê o BDM todo dia, escuta podcasts, mergulha em release trimestral, anota tudo, decide com a cabeça fria — e entrega resultado.</p>
+      <div class="letter-highlight">
+        "Esta proposta não é sobre substituir nada disso.<br>É sobre dar a você uma <strong>extensão</strong>."
+      </div>
+      <p>Em vez de gastar <strong>3 horas por dia</strong> juntando informação, você gasta <strong>30 minutos</strong> consumindo informação já filtrada, organizada e cruzada com a sua carteira.</p>
+      <p>Você continua decidindo. Você continua sendo a inteligência da operação.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── SLIDE 3: What is Superclawman ──────────────────────────────── -->
+<section class="slide slide-what" data-slide="2">
+  <div class="slide-inner">
+    <div class="eyebrow">O que é o Superclawman</div>
+    <h2 class="what-title">Em <em>uma frase:</em></h2>
+    <div class="what-def">
+      Um agente de Inteligência Artificial que trabalha para você, conversa pelo WhatsApp como se fosse um analista do seu time, e tem acesso — autorizado por você — às fontes que você já consome hoje.
+    </div>
+    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:16px 20px; font-size:13px; color:var(--g500); line-height:1.5;">
+        📰 BDM · Valor · CVM · Bloomberg · FT · WSJ · Reuters
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:16px 20px; font-size:13px; color:var(--g500); line-height:1.5;">
+        🎙️ Stock Pickers · Outliers · Market Makers · Investtalk · Inside
+      </div>
+      <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:16px 20px; font-size:13px; color:var(--g500); line-height:1.5;">
+        📊 Releases · Fatos relevantes · Earnings calendar
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SLIDE 4: Three blocks ───────────────────────────────────────── -->
+<section class="slide slide-blocks" data-slide="3">
+  <div class="slide-inner">
+    <div class="eyebrow">Como funciona</div>
+    <h2 class="blocks-title">Três blocos,<br><em>um resultado.</em></h2>
+    <div class="blocks-grid">
+      <div class="block-card">
+        <div class="block-num">01 — Lê</div>
+        <div class="block-heading">Ele lê, ouve e assiste por você</div>
+        <div class="block-body">Tudo que você quiser — BDM, Valor, podcasts, YouTube, newsletters, relatórios setoriais, notícias internacionais. Enquanto você dorme.</div>
+      </div>
+      <div class="block-card">
+        <div class="block-num">02 — Cruza</div>
+        <div class="block-heading">Organiza, cruza e resume</div>
+        <div class="block-body">Não é só um resumo. É o BDM cruzado com a sua carteira: o que afeta VALE, PETR, ITUB, sua tese de small caps. É a leitura que você faria, se tivesse 10 horas em vez de 1.</div>
+      </div>
+      <div class="block-card">
+        <div class="block-num">03 — Entrega</div>
+        <div class="block-heading">No canal que você já usa</div>
+        <div class="block-body">Tudo no WhatsApp. Sem app novo, sem login, sem dashboard. Se você sabe mandar mensagem para um amigo, você sabe usar o Superclawman.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SLIDE 5: Before / After table ──────────────────────────────── -->
+<section class="slide slide-table" data-slide="4">
+  <div class="slide-inner">
+    <div class="eyebrow">Sua rotina</div>
+    <h2 class="table-title">Hoje × <em>com Superclawman</em></h2>
+    <div style="overflow-x:auto;">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Atividade</th>
+            <th>⏱ Hoje (manual)</th>
+            <th>⚡ Com Superclawman</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Bom Dia Mercado</td>
+            <td>Lê o e-mail inteiro (~20 min) toda manhã</td>
+            <td>Briefing às 6h com os 5 pontos que afetam SUA carteira</td>
+          </tr>
+          <tr>
+            <td>Valor Econômico</td>
+            <td>Navega o site procurando o que é relevante</td>
+            <td>Digest diário com artigos relevantes para suas posições</td>
+          </tr>
+          <tr>
+            <td>Podcasts</td>
+            <td>Ouve no carro, na academia, no fim de semana</td>
+            <td>Transcrição + 10 bullets + ações sugeridas para sua carteira</td>
+          </tr>
+          <tr>
+            <td>Release trimestral</td>
+            <td>Baixa o PDF, lê, anota, compara manualmente</td>
+            <td>Manda o PDF no chat → análise estruturada em segundos</td>
+          </tr>
+          <tr>
+            <td>Fatos relevantes</td>
+            <td>Descobre pelo jornal ou por alguém te avisar</td>
+            <td>Alerta no WhatsApp em minutos, com contexto e impacto</td>
+          </tr>
+          <tr>
+            <td>Mercados globais</td>
+            <td>Dá uma olhada quando lembra</td>
+            <td>Digest 6h e 17h: S&P, NASDAQ, STOXX, Nikkei, commodities</td>
+          </tr>
+          <tr>
+            <td>Earnings calendar</td>
+            <td>Anota mentalmente ou em papel</td>
+            <td>Lembrete 2 dias antes + preview + análise pós-resultado</td>
+          </tr>
+          <tr>
+            <td>Pesquisa ad-hoc</td>
+            <td>Abre Status Invest, Fundamentei, planilha…</td>
+            <td>Pergunta no WhatsApp → resposta em 20 segundos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── SLIDE 6: CTA ────────────────────────────────────────────────── -->
+<section class="slide slide-cta" data-slide="5">
+  <div class="slide-inner">
+    <div class="eyebrow" style="color:rgba(255,255,255,0.6);">Próximo passo</div>
+    <h2 class="cta-title">Se fizer sentido,<br><em>conversamos.</em></h2>
+    <p class="cta-body">
+      Se não fizer, você me diz e a gente segue tomando café no domingo.<br><br>
+      Mas se fizer — e eu acredito que vai fazer — a gente começa essa semana. Em dias você já tem um analista júnior trabalhando 24 horas para você.
+    </p>
+    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:40px;">
+      <div style="background:rgba(0,0,0,0.15); border-radius:8px; padding:16px 24px; color:#fff;">
+        <div style="font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; opacity:0.6; margin-bottom:6px;">Configuração</div>
+        <div style="font-size:17px; font-weight:500;">Uma semana</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.15); border-radius:8px; padding:16px 24px; color:#fff;">
+        <div style="font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; opacity:0.6; margin-bottom:6px;">Canal</div>
+        <div style="font-size:17px; font-weight:500;">WhatsApp — zero curva</div>
+      </div>
+      <div style="background:rgba(0,0,0,0.15); border-radius:8px; padding:16px 24px; color:#fff;">
+        <div style="font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; opacity:0.6; margin-bottom:6px;">Decisão</div>
+        <div style="font-size:17px; font-weight:500;">Sempre sua</div>
+      </div>
+    </div>
+    <div class="cta-sig">Enviado por Paulo Ovidio · Maio de 2026 · Superclawman</div>
+  </div>
+</section>
+
+<script>
+  // ── Intersection Observer for slide animations ─────────────────────────
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.getElementById('navDots');
+  const counter = document.getElementById('slideCounter');
+  const total = slides.length;
+
+  // Build nav dots
+  slides.forEach((slide, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => slide.scrollIntoView({ behavior: 'smooth' }));
+    dots.appendChild(dot);
+  });
+
+  // Animate slide-inner on visibility
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const inner = entry.target.querySelector('.slide-inner');
+      const idx = parseInt(entry.target.dataset.slide);
+      const allDots = document.querySelectorAll('.dot');
+
+      if (entry.isIntersecting) {
+        setTimeout(() => { if (inner) inner.classList.add('visible'); }, 80);
+        allDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        counter.textContent = `${idx + 1} / ${total}`;
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
